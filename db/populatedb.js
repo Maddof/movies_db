@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS directors (
 
 CREATE TABLE IF NOT EXISTS genres (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  name TEXT NOT NULL
+  name TEXT NOT NULL,
+  slug TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS movies (
@@ -39,12 +40,12 @@ INSERT INTO directors (f_name, l_name) VALUES
 ('Martin', 'Scorsese'),
 ('James', 'Cameron');
 
-INSERT INTO genres (name) VALUES
-('Action'),
-('Drama'),
-('Sci-Fi'),
-('Thriller'),
-('Adventure');
+INSERT INTO genres (name, slug) VALUES
+('Action', 'action'),
+('Drama', 'drama'),
+('Sci-Fi', 'sci-fi'),
+('Thriller', 'thriller'),
+('Adventure', 'adventure');
 
 INSERT INTO movies (title, year_released, director_id, runtime, age_rating, rating) VALUES
 ('Jurassic Park', 1993, 1, 127, 'PG-13', 8.1),

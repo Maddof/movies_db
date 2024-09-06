@@ -131,7 +131,7 @@ ol li {
   width: 825px;
   position: relative;
   height: 168px;
-  background: #025587 url(logo.png) no-repeat;
+  background: #025587;
 }
 
 #logo #logo_text {
@@ -173,6 +173,8 @@ ol li {
   height: 72px;
   padding: 0;
   background: #29415d;
+  border-top: 2px solid #000000;
+  border-bottom: 2px solid #000000;
 }
 
 ul#menu,
@@ -211,7 +213,7 @@ ul#menu li.selected a:hover {
   max-width: 800px;
   display: flex;
   overflow: hidden;
-  margin: 0 auto 0 auto;
+  margin: 2rem auto 2rem auto;
   padding: 20px 24px 20px 37px;
   background: #fff;
 }
@@ -230,13 +232,6 @@ ul#menu li.selected a:hover {
 .sidebar li {
   list-style: none;
   padding: 0 0 7px 0;
-}
-
-.sidebar li a,
-.sidebar li a:hover {
-  padding: 0 0 0 40px;
-  display: block;
-  background: transparent;
 }
 
 .sidebar li a.selected {
