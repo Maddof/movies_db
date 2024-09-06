@@ -3,15 +3,13 @@ import { view } from "../db/queries.js";
 // @desc Render all genres (index)
 // @route GET
 const renderIndex = async (req, res, next) => {
-  console.log("Rendering index");
-  res.render("index");
+  res.render("index", { title: "Homepage" });
 };
 
 // @desc Render about page
 // @route GET
 const renderAbout = async (req, res, next) => {
-  console.log("Rendering about");
-  res.render("about");
+  res.render("about", { title: "About us" });
 };
 
 // @desc View single genre
@@ -21,10 +19,23 @@ const renderSingleGenre = async (req, res, next) => {
   const moviesPerGenre = await view.getMoviesPerGenre(genreSlug);
   const genreName = await view.getGenreNameBySlug(genreSlug);
   res.render("singleCategory", {
-    title: "Genre",
+    title: genreName + " Movies",
     movies: moviesPerGenre,
     genreName: genreName,
   });
 };
 
-export { renderIndex, renderAbout, renderSingleGenre };
+// @desc View single movie
+// @route GET /genres/:slug
+const renderSingleMovie = async (req, res, next) => {
+  const movieSlug = req.params.slug;
+  const movie = await view.getMovieBySlug(movieSlug);
+  const movieGenres = await view.getMovieGenresBySlug(movieSlug);
+  res.render("singleMovie", {
+    title: movie.title,
+    movie: movie,
+    movieGenres: movieGenres,
+  });
+};
+
+export { renderIndex, renderAbout, renderSingleGenre, renderSingleMovie };

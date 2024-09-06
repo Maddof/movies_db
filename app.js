@@ -1,11 +1,13 @@
 import express from "express";
 import path from "path";
+import expressEjsLayouts from "express-ejs-layouts";
 import { fileURLToPath } from "url";
 import { router } from "./routes/router.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+// const { ejsLayouts } = expressEjsLayouts;
 
 // Get directory & file names using ES module compatible methods
 const __filename = fileURLToPath(import.meta.url); // Correct way to get __filename
@@ -18,6 +20,8 @@ const assetsPath = path.join(__dirname, "public");
 app.use(express.static(assetsPath));
 
 // Setting Up EJS as the View Engine
+app.use(expressEjsLayouts);
+app.set("layout");
 app.set("view engine", "ejs");
 // Setting the Views Directory
 app.set("views", path.join(__dirname, "views"));

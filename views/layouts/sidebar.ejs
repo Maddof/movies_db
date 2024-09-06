@@ -5,10 +5,8 @@
   <ul>
     <% genres.forEach((genre) => { %>
     <li>
-      <a
-        href="/genre/<%=genre.slug%>?genre-name=<%= encodeURIComponent(genre.name) %>"
-        ><%= genre.name %></a
-      >( <%= genre.count %> )
+      <a href="/genre/<%=genre.slug%>"><%= genre.name %></a>( <%= genre.count %>
+      )
     </li>
     <% }) %>
   </ul>

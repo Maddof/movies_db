@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS genres (
 CREATE TABLE IF NOT EXISTS movies (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     title TEXT NOT NULL,
+    slug TEXT NOT NULL,
     year_released INT,
     director_id INT REFERENCES directors(id),
     runtime INT,
@@ -47,12 +48,12 @@ INSERT INTO genres (name, slug) VALUES
 ('Thriller', 'thriller'),
 ('Adventure', 'adventure');
 
-INSERT INTO movies (title, year_released, director_id, runtime, age_rating, rating) VALUES
-('Jurassic Park', 1993, 1, 127, 'PG-13', 8.1),
-('Inception', 2010, 2, 148, 'PG-13', 8.8),
-('Pulp Fiction', 1994, 3, 154, 'R', 8.9),
-('The Wolf of Wall Street', 2013, 4, 180, 'R', 8.2),
-('Avatar', 2009, 5, 162, 'PG-13', 7.8);
+INSERT INTO movies (title, slug, year_released, director_id, runtime, age_rating, rating) VALUES
+('Jurassic Park', 'jurassic-park', 1993, 1, 127, 'PG-13', 8.1),
+('Inception', 'inception', 2010, 2, 148, 'PG-13', 8.8),
+('Pulp Fiction', 'pulp-fiction', 1994, 3, 154, 'R', 8.9),
+('The Wolf of Wall Street', 'the-wolf-of-wall-street', 2013, 4, 180, 'R', 8.2),
+('Avatar', 'avatar', 2009, 5, 162, 'PG-13', 7.8);
 
 INSERT INTO movie_genres (movie_id, genre_id) VALUES
 (1, 1),

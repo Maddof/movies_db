@@ -3,6 +3,7 @@ import {
   renderIndex,
   renderAbout,
   renderSingleGenre,
+  renderSingleMovie,
 } from "../controllers/moviesController.js";
 import { fetchGenresForViews } from "../middleware/globals.js";
 
@@ -13,5 +14,6 @@ router.use(fetchGenresForViews);
 router.get("/", renderIndex);
 router.get("/about", renderAbout);
 router.get("/genre/:slug", renderSingleGenre);
+router.get("/movie/:slug", renderSingleMovie);
 
 export { router };
