@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS movies (
     director_id INT REFERENCES directors(id),
     runtime INT,
     age_rating TEXT,
-    rating FLOAT
+    rating FLOAT,
+    poster_url TEXT
 );
 
 CREATE TABLE movie_genres (

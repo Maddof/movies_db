@@ -9,9 +9,15 @@
   </div>
   <div id="menubar">
     <ul id="menu">
-      <li class="selected"><a href="/">Home</a></li>
-      <li><a href="#">Examples</a></li>
-      <li><a href="/about">About</a></li>
+      <li class="<%= currentRoute === '/' ? 'selected' : '' %>">
+        <a href="/">Home</a>
+      </li>
+      <li class="<%= currentRoute === `/addmovie` || currentRoute.includes("fetchmoviedata") ? 'selected' : '' %>">
+        <a href="/addmovie">Add movie</a>
+      </li>
+      <li class="<%= currentRoute === '/about' ? 'selected' : '' %>">
+        <a href="/about">About</a>
+      </li>
 
       <li><a href="#">A Page</a></li>
       <li><a href="#">Another Page</a></li>

@@ -1,4 +1,5 @@
 import { pool } from "./pool.js";
+import { fetchPosterUrl, fetchMovieData } from "../api.js";
 
 const view = {
   async getAllGenres() {
@@ -8,10 +9,10 @@ const view = {
 
   async getAllGenresWithCount() {
     const query = `
-        SELECT g.slug AS slug, g.name AS name, COUNT(mg.movie_id) AS count
+        SELECT g.id AS id, g.slug AS slug, g.name AS name, COUNT(mg.movie_id) AS count
         FROM genres g
         LEFT JOIN movie_genres mg ON g.id = mg.genre_id
-        GROUP BY g.name, g.slug;
+        GROUP BY g.name, g.slug, g.id;
     `;
     const { rows } = await pool.query(query);
     return rows;
@@ -78,4 +79,59 @@ const view = {
   },
 };
 
-export { view };
+const insert = {
+  // Function to insert a movie with poster URL
+  async insertMovie(movieData) {
+    const {
+      title,
+      slug,
+      year_released,
+      director_id,
+      runtime,
+      age_rating,
+      rating,
+    } = movieData;
+
+    // Fetch the poster URL from OMDb API
+    const posterUrl = await fetchPosterUrl(title);
+
+    // SQL query to insert the movie data into the database
+    const insertMovieQ = `
+    INSERT INTO movies (title, slug, year_released, director_id, runtime, age_rating, rating, poster_url)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    RETURNING id;
+  `;
+
+    // Insert movie data including the poster URL
+    try {
+      const result = await pool.query(insertMovieQ, [
+        title,
+        slug,
+        year_released,
+        director_id,
+        runtime,
+        age_rating,
+        rating,
+        posterUrl,
+      ]);
+
+      const movieId = result.rows[0].id;
+      console.log("Movie inserted:", result.rows[0]);
+
+      const insertGenreQuery = `
+      INSERT INTO movie_genres (movie_id, genre_id)
+      VALUES ($1, $2);
+    `;
+
+      for (const genreId of movieData.genres) {
+        await pool.query(insertGenreQuery, [movieId, genreId]);
+      }
+
+      return result.rows[0];
+    } catch (error) {
+      console.error("Error inserting movie:", error);
+    }
+  },
+};
+
+export { view, insert };

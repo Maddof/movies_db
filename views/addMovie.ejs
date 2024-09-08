@@ -1,0 +1,86 @@
+<form action="/fetchmoviedata" method="GET" class="search-movie-form">
+  <label for="titlesearch">Title: </label>
+  <input type="text" id="titlesearch" name="titlesearch" />
+  <br />
+  <button type="submit" id="search-movie-btn">Fetch movie data</button>
+</form>
+<br />
+<br />
+
+<form action="/new" method="POST" class="add-new-movie-form">
+  <label for="name">Title: </label>
+  <input
+    type="text"
+    id="title"
+    name="title"
+    value="<%= moviedata ? moviedata.title : '' %>"
+  />
+  <br />
+  <label for="slug">Slug: </label>
+  <input
+    type="text"
+    id="slug"
+    name="slug"
+    value="<%= moviedata ? moviedata.slug : '' %>"
+  />
+  <br />
+  <label for="year_released">Year released: </label>
+  <input
+    type="number"
+    name="year_released"
+    id="year_released"
+    value="<%= moviedata ? moviedata.year_released : '' %>"
+  />
+  <br />
+  <label for="director_id">Director id: </label>
+  <input type="number" name="director_id" id="director_id" value="<%= moviedata ? moviedata.director_id : '' %>"/>
+  <br />
+  <label for="runtime">Runtime: </label>
+  <input
+    type="number"
+    name="runtime"
+    id="runtime"
+    value="<%= moviedata ? moviedata.runtime : '' %>"
+  />
+  <br />
+  <label for="age_rating">Age rating:</label>
+  <select name="age_rating" id="age_rating" required>
+    <option value="G" <%= moviedata && moviedata.age_rating.includes("G") ? "selected" : "" %>>G</option>
+    <option value="PG" <%= moviedata && moviedata.age_rating.includes("PG") ? "selected" : "" %>>PG</option>
+    <option value="PG-13" <%= moviedata && moviedata.age_rating.includes("PG-13") ? "selected" : "" %>>PG-13</option>
+    <option value="R" <%= moviedata && moviedata.age_rating.includes("R") ? "selected" : "" %>>R</option>
+    <option value="NC-17" <%= moviedata && moviedata.age_rating.includes("NC-17") ? "selected" : "" %>>NC-17</option>
+  </select>
+  <br />
+  <label for="rating">Rating(grade): </label>
+  <input type="number" name="rating" id="rating" value="<%= moviedata ? moviedata.rating : '' %>"/>
+  <br />
+
+  <label for="genres">Genres:</label>
+  <div id="genres-checkboxes">
+    <% genres.forEach(genre => { %>
+      <div>
+        <input
+          type="checkbox"
+          id="genre_<%= genre.id %>"
+          name="genres"
+          value="<%= genre.id %>"
+          <%= moviedata && Array.isArray(moviedata.genres) && moviedata.genres.includes(genre.name) ? "checked" : "" %>
+        />
+        <label for="genre_<%= genre.id %>"><%= genre.name %></label>
+      </div>
+    <% }); %>
+  </div>
+  <br />
+  <br />
+  <button type="submit">Add movie</button>
+</form>
+
+<!-- Success Message -->
+<% if (typeof success !== 'undefined' && success) { %>
+  <div class="success-message">
+    <p><%= success %></p>
+  </div>
+<% } %>
+
+<%- include("partials/errors.ejs") %>

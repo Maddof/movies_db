@@ -7,7 +7,6 @@ import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
-// const { ejsLayouts } = expressEjsLayouts;
 
 // Get directory & file names using ES module compatible methods
 const __filename = fileURLToPath(import.meta.url); // Correct way to get __filename
@@ -33,6 +32,12 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Sets current route, globally available
+app.use((req, res, next) => {
+  res.locals.currentRoute = req.originalUrl;
+  next();
+});
+
 // Use the router
 app.use("/", router);
 
@@ -41,4 +46,5 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`http://localhost:3000`);
 });
