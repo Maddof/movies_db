@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Function to fetch the movie poster URL from OMDb API
+// Function to fetch the movie poster URL from OMDb API with movie title
 async function fetchPosterUrl(movieTitle) {
   const apiKey = process.env.OMDBKEY;
   const url = `http://www.omdbapi.com/?t=${encodeURIComponent(

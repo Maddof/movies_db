@@ -61,7 +61,6 @@ h6 {
 
 a,
 a:hover {
-  outline: none;
   text-decoration: underline;
   color: #1293ee;
 }
@@ -362,4 +361,14 @@ table tr td {
   background: #f0efe2;
   color: #47433f;
   border-top: 1px solid #fff;
+}
+
+#genres-checkboxes {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+}
+
+#genres-checkboxes input {
+  cursor: pointer;
 }

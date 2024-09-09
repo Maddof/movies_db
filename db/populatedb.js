@@ -8,7 +8,8 @@ const SQL = `
 CREATE TABLE IF NOT EXISTS directors (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   f_name TEXT,
-  l_name TEXT
+  l_name TEXT,
+  UNIQUE (f_name, l_name)
 );
 
 CREATE TABLE IF NOT EXISTS genres (

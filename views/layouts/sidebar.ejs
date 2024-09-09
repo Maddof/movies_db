@@ -5,11 +5,23 @@
   <ul>
     <% genres.forEach((genre) => { %>
     <li>
-      <a href="/genre/<%=genre.slug%>"><%= genre.name %></a>( <%= genre.count %>
-      )
+      <a href="/genre/<%=genre.slug%>"><%= genre.name %></a> ( <%= genre.count
+      %> )
     </li>
     <% }) %>
   </ul>
+
+  <h3>Top Directors</h3>
+
+  <ul>
+    <% directors.forEach((director) => { %>
+    <li>
+      <a href="/director/<%=director.id%>"><%= director.name %></a> ( <%=
+      director.count %> )
+    </li>
+    <% }) %>
+  </ul>
+
   <h4>New Website Launched</h4>
   <h5>January 1st, 2010</h5>
   <p>

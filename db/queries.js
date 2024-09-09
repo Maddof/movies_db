@@ -3,7 +3,7 @@ import { fetchPosterUrl, fetchMovieData } from "../api.js";
 
 const view = {
   async getAllGenres() {
-    const { rows } = await pool.query("SELECT * FROM genres");
+    const { rows } = await pool.query("SELECT * FROM genres ORDER BY name");
     return rows;
   },
 
@@ -12,7 +12,8 @@ const view = {
         SELECT g.id AS id, g.slug AS slug, g.name AS name, COUNT(mg.movie_id) AS count
         FROM genres g
         LEFT JOIN movie_genres mg ON g.id = mg.genre_id
-        GROUP BY g.name, g.slug, g.id;
+        GROUP BY g.name, g.slug, g.id
+        ORDER BY g.name;
     `;
     const { rows } = await pool.query(query);
     return rows;

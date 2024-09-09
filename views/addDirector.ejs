@@ -1,0 +1,16 @@
+<form action="/newdirector" method="POST" class="add-director-form">
+  <label for="f_name">First name: </label>
+  <input type="text" id="f_name" name="f_name" />
+
+  <label for="l_name">Last name: </label>
+  <input type="text" id="l_name" name="l_name" />
+
+  <button type="submit" id="add-director-btn">Add director</button>
+</form>
+
+<!-- Success Message -->
+<% if (typeof success !== 'undefined' && success) { %>
+<div class="success-message">
+  <p><%= success %></p>
+</div>
+<% } %> <%- include("partials/errors.ejs") %>

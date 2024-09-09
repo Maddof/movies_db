@@ -2,6 +2,7 @@ import { view, insert } from "../db/queries.js";
 import { fetchMovieData } from "../api.js";
 import { generateSlug } from "../utils/slugGenerator.js";
 import { body, validationResult } from "express-validator";
+import { director } from "../db/queriesDirectors.js";
 
 const validateMovie = [
   body("title")
@@ -28,6 +29,15 @@ const validateMovie = [
   body("genres").notEmpty().withMessage("Select at least 1 genre"),
 ];
 
+const validateDirector = [
+  body("f_name")
+    .isLength({ min: 1, max: 100 })
+    .withMessage("First name must be between 1 and 100 characters"),
+  body("l_name")
+    .isLength({ min: 1, max: 100 })
+    .withMessage("First name must be between 1 and 100 characters"),
+];
+
 // @desc Render all genres (index)
 // @route GET
 const renderIndex = async (req, res, next) => {
@@ -44,10 +54,25 @@ const renderAbout = async (req, res, next) => {
 // @route GET
 const renderAddMovie = async (req, res, next) => {
   try {
+    const alldirectors = await director.getAllDirectors();
     res.render("addMovie", {
       title: "Add movie",
+      alldirectors: alldirectors,
       moviedata: null, // Initial form state without movie data
       errors: null, // No errors initially
+      success: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc Render add director page
+const renderAddDirector = async (req, res, next) => {
+  try {
+    res.render("addDirector", {
+      title: "Add director",
+      errors: null,
       success: null,
     });
   } catch (error) {
@@ -81,11 +106,24 @@ const renderSingleMovie = async (req, res, next) => {
   });
 };
 
+// @desc View single director
+// @route GET /director/:id
+const renderSingleDirector = async (req, res, next) => {
+  const directorId = req.params.id;
+  const moviesPerDirector = await director.getMoviesByDirector(directorId);
+  console.log(moviesPerDirector);
+  res.render("singleDirector", {
+    title: moviesPerDirector[0].name,
+    movies: moviesPerDirector,
+  });
+};
+
 // @desc Insert new movie
 // @route  POST /new
 const insertMovie = [
   validateMovie,
   async (req, res, next) => {
+    const alldirectors = await director.getAllDirectors();
     const movieData = {
       title: req.body.title,
       slug: req.body.slug,
@@ -101,6 +139,7 @@ const insertMovie = [
     if (!errors.isEmpty()) {
       return res.status(400).render("addMovie", {
         title: "Error with adding movie",
+        alldirectors: alldirectors,
         errors: errors.array(),
         moviedata: movieData,
       });
@@ -111,6 +150,7 @@ const insertMovie = [
     return res.status(201).render("addMovie", {
       title: "Add movie",
       success: "Movie added successfully!",
+      alldirectors: alldirectors,
       moviedata: null, // Reset the form after success
     });
   },
@@ -131,11 +171,57 @@ const searchMovieData = async (req, res, next) => {
   res.render("addMovie", { title: "Add movie", moviedata: movieCustomData });
 };
 
+// @desc Insert new director
+// @route POST /newdirector
+
+const inserDirector = [
+  validateDirector,
+  async (req, res, next) => {
+    const directorData = {
+      f_name: req.body.f_name,
+      l_name: req.body.l_name,
+    };
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).render("addDirector", {
+        title: "Error with adding director",
+        errors: errors.array(),
+      });
+    }
+
+    // Check if the director already exists
+    const existingDirector = await director.findDirectorByName(
+      directorData.f_name,
+      directorData.l_name
+    );
+
+    if (existingDirector) {
+      // If the director exists, send an error
+      return res.status(400).render("addDirector", {
+        title: "Error with adding director",
+        errors: [{ msg: "Director already exists" }],
+      });
+    }
+
+    // If no director exists, add the new director
+    await director.addNewDirector(directorData);
+
+    return res.status(201).render("addDirector", {
+      title: "Add director",
+      success: "Director added successfully!",
+    });
+  },
+];
+
 export {
   renderIndex,
   renderAbout,
   renderSingleGenre,
   renderSingleMovie,
+  renderSingleDirector,
+  renderAddDirector,
+  inserDirector,
   insertMovie,
   renderAddMovie,
   searchMovieData,

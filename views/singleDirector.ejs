@@ -1,0 +1,7 @@
+<h1><%= movies[0].name %></h1>
+
+<ul>
+  <% movies.forEach((movie) => { %>
+  <li><a href="/movie/<%=movie.slug%>"><%= movie.title %></a></li>
+  <% }) %>
+</ul>
