@@ -1,7 +1,37 @@
-<h1><%= movie.title %></h1>
-<img src="<%= movie.poster_url %>" alt="poster image movie" />
-<ul>
+<div class="single-movie-title-wrapper">
+  <h1 class="singlemovie-title"><%= movie.title %></h1>
+  <form action="/deletemovie" method="POST" class="delete-movie-form">
+    <input type="hidden" value="<%= movie.slug %>" name="movieslug" />
+    <button type="submit" class="delete-movie-btn">DELETE</button>
+  </form>
+  <a href="/movie/edit/<%=movie.slug%>">Update</a>
+</div>
+
+<ul class="singlemovie-genres-list">
   <% movieGenres.forEach((genre) => { %>
   <li><%= genre %></li>
   <% }) %>
 </ul>
+
+<div class="single-movie-wrapper">
+  <div>
+    <img
+      src="<%= movie.poster_url %>"
+      class="singlemovie-poster"
+      alt="poster image movie"
+    />
+  </div>
+  <div>
+    <ul class="singlemovie-list">
+      <li>Year released: <%= movie.year_released %></li>
+      <li>Runtime: <%= movie.runtime %> min</li>
+      <li>Rated: <%= movie.age_rating %></li>
+      <li>Your grade: <%= movie.rating %></li>
+      <li>
+        Review or description: <br /><br />
+
+        <%= movie.descr ? movie.descr : `No review or description` %>
+      </li>
+    </ul>
+  </div>
+</div>

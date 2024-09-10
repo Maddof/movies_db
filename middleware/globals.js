@@ -15,7 +15,6 @@ const fetchGenresForViews = async (req, res, next) => {
 const fetchTopDirectors = async (req, res, next) => {
   try {
     const directorswithcount = await director.getTopDirectors();
-    console.log(directorswithcount);
     res.locals.directors = directorswithcount;
     next();
   } catch (error) {

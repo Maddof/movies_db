@@ -38,3 +38,48 @@
   margin-inline: auto;
   cursor: pointer;
 }
+
+.singlemovie-title {
+  margin: 0;
+}
+
+.singlemovie-genres-list {
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+  margin: 0 0 1em 0;
+}
+
+.singlemovie-genres-list li {
+  list-style-type: none;
+  border: 2px solid #002c47;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: small;
+}
+.singlemovie-poster {
+  width: 200px;
+  height: auto;
+}
+.single-movie-wrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+.singlemovie-list {
+}
+
+.singlemovie-list li {
+  list-style-type: none;
+}
+
+.single-movie-title-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.delete-movie-btn {
+  position: absolute;
+  right: 0;
+}

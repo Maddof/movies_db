@@ -25,6 +25,17 @@ const director = {
     return rows;
   },
 
+  async getMovieDirectorByMovieSlug(movieslug) {
+    const query = `
+      SELECT CONCAT(d.f_name, ' ', d.l_name) AS name
+      FROM directors d
+      JOIN movies m ON d.id = m.director_id
+      WHERE m.slug = $1
+    `;
+    const { rows } = await pool.query(query, [movieslug]);
+    return rows[0].name;
+  },
+
   async getMoviesByDirector(directorId) {
     const query = `
         SELECT d.id, CONCAT(d.f_name, ' ', d.l_name) AS name, m.title, m.slug

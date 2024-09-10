@@ -69,6 +69,10 @@ a:hover {
   text-decoration: none;
 }
 
+button {
+  cursor: pointer;
+}
+
 .left {
   float: left;
   width: auto;
@@ -94,22 +98,14 @@ blockquote {
   background: #fff;
 }
 
-ul {
-  margin: 2px 0 22px 17px;
-}
-
-ul li {
-  list-style-type: circle;
-  margin: 0 0 6px 0;
+ul,
+ol {
   padding: 0 0 4px 5px;
 }
 
-ol {
-  margin: 8px 0 22px 20px;
-}
-
+ul li,
 ol li {
-  margin: 0 0 11px 0;
+  margin-bottom: 0.5em;
 }
 
 #main,
@@ -242,17 +238,6 @@ ul#menu li.selected a:hover {
   width: 75%;
   text-align: left;
   padding: 0;
-}
-
-#content ul {
-  margin: 2px 0 22px 0px;
-}
-
-#content ul li {
-  list-style-type: none;
-  margin: 0 0 6px 0;
-  padding: 0 0 4px 25px;
-  line-height: 1.5em;
 }
 
 #footer {

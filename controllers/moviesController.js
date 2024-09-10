@@ -1,4 +1,4 @@
-import { view, insert } from "../db/queries.js";
+import { view, insert, deleteM, editM } from "../db/queries.js";
 import { fetchMovieData } from "../api.js";
 import { generateSlug } from "../utils/slugGenerator.js";
 import { body, validationResult } from "express-validator";
@@ -51,7 +51,7 @@ const renderAbout = async (req, res, next) => {
 };
 
 // @desc Render add movie page
-// @route GET
+// @route GET /addmovie
 const renderAddMovie = async (req, res, next) => {
   try {
     const alldirectors = await director.getAllDirectors();
@@ -80,6 +80,80 @@ const renderAddDirector = async (req, res, next) => {
   }
 };
 
+// @desc Render add director page
+// @route GET /movie/edit/:slug
+const renderEditMovie = async (req, res, next) => {
+  const movieSlug = req.params.slug;
+  const movieDirector = await director.getMovieDirectorByMovieSlug(movieSlug);
+  try {
+    const alldirectors = await director.getAllDirectors();
+    const movieData = await view.getMovieBySlug(movieSlug);
+    const movieGenres = await view.getMovieGenresBySlug(movieSlug);
+    res.render("editMovie", {
+      title: "Edit movie",
+      alldirectors: alldirectors,
+      movieDirector: movieDirector,
+      moviedata: movieData,
+      moviegenres: movieGenres,
+      errors: null,
+      success: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc Edit Single Movie
+// @route POST /editmovie
+const editSingleMovie = [
+  validateMovie,
+  async (req, res, next) => {
+    const alldirectors = await director.getAllDirectors();
+    const movieDirector = await director.getMovieDirectorByMovieSlug(
+      req.body.slug
+    );
+    const movieData = {
+      title: req.body.title,
+      slug: req.body.slug,
+      year_released: parseInt(req.body.year_released),
+      director_id: parseInt(req.body.director_id),
+      runtime: parseInt(req.body.runtime),
+      age_rating: req.body.age_rating,
+      rating: parseFloat(req.body.rating),
+      descr: req.body.description,
+    };
+    const movieId = await view.getMovieIdBySlug(req.body.slug);
+    let movieGenres = await view.getMovieGenresBySlug(req.body.slug);
+
+    console.log("EDITING MOVIE!");
+    console.log(movieId);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).render("editMovie", {
+        title: "Error with adding movie",
+        alldirectors: alldirectors,
+        movieDirector: movieDirector,
+        errors: errors.array(),
+        moviedata: movieData,
+        moviegenres: movieGenres,
+      });
+    }
+
+    await editM.editSingleMovie(movieData, req.body.genres, movieId);
+    movieGenres = await view.getMovieGenresBySlug(req.body.slug);
+
+    // After successful insertion, pass a success message
+    return res.status(201).render("editMovie", {
+      title: "Edit movie",
+      success: "Movie updated successfully!",
+      alldirectors: alldirectors,
+      movieDirector: movieDirector,
+      moviedata: movieData, // Reset the form after success
+      moviegenres: movieGenres,
+    });
+  },
+];
+
 // @desc View single genre
 // @route GET /genres/:slug
 const renderSingleGenre = async (req, res, next) => {
@@ -94,10 +168,11 @@ const renderSingleGenre = async (req, res, next) => {
 };
 
 // @desc View single movie
-// @route GET /genres/:slug
+// @route GET /movie/:slug
 const renderSingleMovie = async (req, res, next) => {
   const movieSlug = req.params.slug;
   const movie = await view.getMovieBySlug(movieSlug);
+  console.log(movie);
   const movieGenres = await view.getMovieGenresBySlug(movieSlug);
   res.render("singleMovie", {
     title: movie.title,
@@ -119,7 +194,7 @@ const renderSingleDirector = async (req, res, next) => {
 };
 
 // @desc Insert new movie
-// @route  POST /new
+// @route POST /new
 const insertMovie = [
   validateMovie,
   async (req, res, next) => {
@@ -132,6 +207,7 @@ const insertMovie = [
       runtime: parseInt(req.body.runtime),
       age_rating: req.body.age_rating,
       rating: parseFloat(req.body.rating),
+      description: req.body.description,
       genres: req.body.genres,
     };
 
@@ -156,8 +232,26 @@ const insertMovie = [
   },
 ];
 
+// @desc Delete single movie
+// @route POST /deletemovie
+
+const deleteSingleMovie = async (req, res, next) => {
+  const movieSlug = req.body.movieslug;
+  try {
+    const result = await deleteM.deleteSingleMovie(movieSlug);
+    res.render("index", {
+      title: "Homepage",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc Fetch movie data from OMDb api
+// @route GET /fetchmoviedata
 const searchMovieData = async (req, res, next) => {
   const movieData = await fetchMovieData(req.query.titlesearch);
+  const alldirectors = await director.getAllDirectors();
 
   const movieCustomData = {
     title: movieData.Title,
@@ -168,7 +262,11 @@ const searchMovieData = async (req, res, next) => {
     genres: movieData.Genre.split(", "),
   };
   console.log(movieCustomData);
-  res.render("addMovie", { title: "Add movie", moviedata: movieCustomData });
+  res.render("addMovie", {
+    title: "Add movie",
+    moviedata: movieCustomData,
+    alldirectors: alldirectors,
+  });
 };
 
 // @desc Insert new director
@@ -221,8 +319,11 @@ export {
   renderSingleMovie,
   renderSingleDirector,
   renderAddDirector,
+  renderEditMovie,
+  editSingleMovie,
   inserDirector,
   insertMovie,
   renderAddMovie,
   searchMovieData,
+  deleteSingleMovie,
 };

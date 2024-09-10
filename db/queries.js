@@ -62,6 +62,13 @@ const view = {
     return rows[0] ? rows[0] : null; // Return row or null if not found
   },
 
+  // Function to get movie id by slug
+  async getMovieIdBySlug(movieSlug) {
+    const query = `SELECT id FROM movies WHERE slug = $1`;
+    const { rows } = await pool.query(query, [movieSlug]);
+    return rows[0].id ? rows[0].id : null; // Return row or null if not found
+  },
+
   // Function to get movie genres by slug
   async getMovieGenresBySlug(movieSlug) {
     const query = `
@@ -91,6 +98,7 @@ const insert = {
       runtime,
       age_rating,
       rating,
+      description,
     } = movieData;
 
     // Fetch the poster URL from OMDb API
@@ -98,8 +106,8 @@ const insert = {
 
     // SQL query to insert the movie data into the database
     const insertMovieQ = `
-    INSERT INTO movies (title, slug, year_released, director_id, runtime, age_rating, rating, poster_url)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    INSERT INTO movies (title, slug, year_released, director_id, runtime, age_rating, rating, descr, poster_url)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     RETURNING id;
   `;
 
@@ -113,6 +121,7 @@ const insert = {
         runtime,
         age_rating,
         rating,
+        description,
         posterUrl,
       ]);
 
@@ -135,4 +144,86 @@ const insert = {
   },
 };
 
-export { view, insert };
+const deleteM = {
+  async deleteSingleMovie(movieSlug) {
+    const deleteMovieQ = `
+      DELETE FROM movies WHERE slug = $1;
+    `;
+    const result = await pool.query(deleteMovieQ, [movieSlug]);
+    console.log("Success, ", result.rowCount, " movies deleted");
+    return result.rows[0];
+  },
+};
+
+const editM = {
+  async editSingleMovie(movieData, moviegenres, id) {
+    const {
+      title,
+      slug,
+      year_released,
+      director_id,
+      runtime,
+      age_rating,
+      rating,
+      descr,
+    } = movieData;
+
+    const movieGenres = moviegenres;
+    const movieId = id;
+
+    // SQL query to update the movie data in the database
+    const editMovieQ = `
+      UPDATE movies
+      SET title         = $1,
+          slug          = $2,
+          year_released = $3,
+          director_id   = $4,
+          runtime       = $5,
+          age_rating    = $6,
+          rating        = $7,
+          descr         = $8
+      WHERE id = $9;
+    `;
+
+    // SQL query to delete existing genres for the movie
+    const deleteGenresQ = `
+      DELETE FROM movie_genres
+      WHERE movie_id = $1;
+        `;
+    // SQL query to insert updated genres for the movie
+    const insertGenreQ = `
+      INSERT INTO movie_genres (movie_id, genre_id)
+      VALUES ($1, $2);
+      `;
+
+    try {
+      const result = await pool.query(editMovieQ, [
+        title,
+        slug,
+        year_released,
+        director_id,
+        runtime,
+        age_rating,
+        rating,
+        descr,
+        movieId,
+      ]);
+
+      console.log("Success movie edited");
+
+      // Delete existing genres for the movie
+      await pool.query(deleteGenresQ, [movieId]);
+
+      // Insert new genres
+      for (const genreId of movieGenres) {
+        await pool.query(insertGenreQ, [movieId, genreId]);
+      }
+
+      return result.rows[0];
+    } catch (error) {
+      console.error("Error updating movie:", error);
+    }
+  },
+};
+
+export { view, insert, deleteM, editM };

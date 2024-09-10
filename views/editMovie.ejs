@@ -1,13 +1,6 @@
-<form action="/fetchmoviedata" method="GET" class="search-movie-form">
-  <label for="titlesearch">Title: </label>
-  <input type="text" id="titlesearch" name="titlesearch" />
-  
-  <button type="submit" id="search-movie-btn">Fetch movie data</button>
-</form>
+<h1>Update movie</h1>
 
-
-
-<form action="/new" method="POST" class="add-new-movie-form">
+<form action="/editmovie" method="POST" class="add-new-movie-form">
   <label for="name">Title: </label>
   <input
     type="text"
@@ -35,7 +28,9 @@
   <select name="director_id" id="director_id" required>
 
     <% alldirectors.forEach((director) => { %>
-        <option value="<%= director.id %>"><%= director.name %></option>
+        <option value="<%= director.id %>"
+          <%= director.name == movieDirector ? "selected" : "" %>
+          ><%= director.name %></option>
 
     <% }) %>
   </select>
@@ -61,7 +56,7 @@
   <input type="number" name="rating" id="rating" value="<%= moviedata ? moviedata.rating : '' %>"/>
   
   <label for="description">Your description or review: </label>
-  <textarea name="description" id="description" rows="6"></textarea>
+  <textarea name="description" id="description" rows="6"><%= moviedata.descr %></textarea>
 
   <label for="genres">Genres:</label>
   <div id="genres-checkboxes">
@@ -72,15 +67,16 @@
           id="genre_<%= genre.id %>"
           name="genres"
           value="<%= genre.id %>"
-          <%= moviedata && Array.isArray(moviedata.genres) && moviedata.genres.includes(genre.name) ? "checked" : "" %>
+          <%= moviedata && Array.isArray(moviegenres) && moviegenres.includes(genre.name) ? "checked" : "" %>
         />
         <label for="genre_<%= genre.id %>"><%= genre.name %></label>
       </div>
     <% }); %>
   </div>
   
-  <button type="submit">Add movie</button>
+  <button type="submit">Edit movie</button>
 </form>
+
 
 <!-- Success Message -->
 <% if (typeof success !== 'undefined' && success) { %>
