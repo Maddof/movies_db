@@ -1,5 +1,5 @@
 import { pool } from "./pool.js";
-import { fetchPosterUrl, fetchMovieData } from "../api.js";
+import { fetchPosterUrl } from "../api.js";
 
 const view = {
   async getAllGenres() {
@@ -69,7 +69,7 @@ const view = {
     return rows[0].id ? rows[0].id : null; // Return row or null if not found
   },
 
-  // Function to get movie genres by slug
+  // Function to get movie genres by movie slug
   async getMovieGenresBySlug(movieSlug) {
     const query = `
       SELECT

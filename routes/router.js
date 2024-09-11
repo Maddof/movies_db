@@ -7,13 +7,15 @@ import {
   renderAddMovie,
   renderEditMovie,
   insertMovie,
-  inserDirector,
   searchMovieData,
-  renderSingleDirector,
-  renderAddDirector,
   deleteSingleMovie,
   editSingleMovie,
 } from "../controllers/moviesController.js";
+import {
+  renderAddDirector,
+  inserDirector,
+  renderSingleDirector,
+} from "../controllers/directorsController.js";
 import {
   fetchGenresForViews,
   fetchTopDirectors,
