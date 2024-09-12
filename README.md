@@ -2,6 +2,10 @@
 
 A webapp (CRUD) where you can manage movies, genres and directors.
 
+Live preview:
+
+https://moviesdb-production.up.railway.app/
+
 ## What I learned
 
 This was a student project for learning the basics of developing a CRUD webapp. Most interesting was setting up and managing databases and tables with many-to-many relationship. For example I have tables for movies and genres. But also a table called movie_genres that manages the many-to-many relationship between movies and genres. So a movie can have more then 1 genre associated with it. And when deleting a movie, the genre associated in the m-t-m table also gets it deleted using Postgres ON DELETE CASCADE clause.
